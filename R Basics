@@ -1,0 +1,464 @@
+###R-work. 
+
+############################################################################
+#####################Basic calculation functions in R.
+
+#Ensure to use comments with my work, so that when someone is reviewing my work they can better understand the work that needs to be done. 
+
+#Addition: 
+x<-5+2
+
+#Subtraction:
+x<-5-2
+
+#Multiplication 
+x<-5*2
+
+#Division
+x<-5/2
+
+#Paraenthese 
+x<- (5+2)*2
+x<-(5+2)/2
+
+#Module
+x<-10%%3
+#Therefore the answer to this function is 1. 
+#The output of a modulo function is the remainder of a division if two numbers.
+#3 goes into 10 3 times, and there is a remainder is 1.
+
+#The use of variables in mathematical operations.
+#variables can be used to store information, and then these variables can then be used in mathematical operations. 
+
+Tea <-5
+Coffee<-6
+Hot_Drinks<- Tea + Coffee 
+
+#Example of how variable can be combined for a specific mathematical process. 
+
+#There are different data types in R, and using code, these data types can be represented. 
+#Data types: Characters, Number and Logical.
+
+a<-1
+class(a)
+#Numeric
+
+b<-"apples"
+class(b)
+#character
+
+c<-TRUE
+c<-FALSE
+class(c)
+#Logical
+
+#It is possible to pinpoint the element in a vector using an index. 
+#The first element within a vector will have an index of 1, the second element 2, as so on, as so forth. 
+
+#Names can be assaigned to a vector using the Names() function. An example as shown below.
+
+###############################################
+#########Vector 2. 
+
+age<-c(15,27,15)
+names(age)<-c("a","b","c") #Anytime that there is a string of number ensure that i add a "c" (c("x","y","z"), before the data set. 
+
+#Using the index function it is also possible to call elements that are within a vector.
+age[1]
+#15
+
+#Using the index function it is also possible to call multiple elements that are within a vector.
+age[c(1,2)]
+#a b
+#15 27
+#Note that multiple vectors were called in this method. Presumably this method will be effective in making edits to specific data points within the data set.  
+
+age[c("a","b","c")]#I can use the index function to name vectors if i wish, but it will be difficult. 
+
+#vectors can also be added, subtracted, multiplied, and divided from each other. 
+#For example: 
+
+vector_1<-c(5,10,15)
+vector_2<-c(10,15,20)
+
+vector_3<-vector_1 + vector_2 
+vector_3<-vector_1 - vector_2
+vector_3<-vector_1 * vector_2
+vector_3<-vector_1 / vector_2
+#These functions may be useful for making some sort of cumulative frequence chart. 
+
+names(vector_1)<-c("a","b","c")
+names(vector_2)<-c("a", "b", "c")
+names(vector_3)<-c("a", "b","c")
+#Note that these functions can be added to names elements within an vector, but the naming must be the same within the vectors. 
+#Remember that this information can also be added using the index function.  
+
+#R has logical operations and it is possible to determine if an operation is TRUE or FALSE. 
+#TRUE operation ==
+#FALSE operation !=
+
+#For example: 
+
+4 == 4 #This checks if the operations equal, therefore the data set will be true.
+4 =! 5 #This checks if the operation if non-equal, therefore this will be true. 
+
+#Both are effective means of investigating the data, both operations of the data set are correct, the situations in which they are used needs to be context specifc. 
+
+#It can also be used for character data sets. 
+
+"book"=="Read"
+#Note that this operation can also be used for charachters. 
+
+Coffee==Hot_Drinks
+#This function can also be done with vectors. 
+#In fact it can be done with almost any data set. 
+
+5=>6 #Useful in investigating if one data set or value is larger than the other. 
+3<=6 #Useful in investigating if one data set or value is smaller than the other.
+# Both outcomes will produce a TRUE and FALSE output. 
+
+#Boolean Vector 
+
+v<-c("Big", "Tiny", "Little")
+Small_Items<- v != "Big"
+Small_Items 
+#From this data set it is possible to understand that there are two small items and one large item. 
+
+v[Small_Items]
+#The elements for the TRUE and FALSE statements within the Boolean vector can be represented using the code. []. 5
+
+#Sum and mean functions: 
+
+#Creating a vector with a range of data using a syntax. 
+
+x<-c(1,2,3,4,5)
+x[1:5] #The same function can be completed using a syntax function. 
+mean(x)
+sum(x)
+
+#########################################
+#Matrixies
+
+matrix_examp<- matrix(3:14, nrow=4, byrow=TRUE)
+matrix_examp<-matrix(3:14, nrow=4, byrow=FALSE)
+#It is the default for the number of columns to be 3, the number of columns can be specified using the nrow function.
+#By including the byrow=FALSE it indicates that the nrow function should specify the number of columns. 
+
+#Selecting data points within a matrix:
+matrix_examp[1,2] #Using this format data within a Matrix can be outputted. 
+
+matrix_examp[1,1:2]#Using this format data within collums 1 and 2 and row 1 can be outputted. 
+#Using this format it also may be possible to make specific alterations to the data, and that data specifically. 
+
+matrix_examp[1,] #Selects an entire row.
+matrix_examp[,2]#Selects an entire column. 
+
+matrix_examp[c(2,3),c(2,3)]
+#Using this method it is possible to output specific rows and columns within a matrix. 
+#Remember it is the rows that.comes first in such a data set. 
+
+#Vectors can be combined to create a matrix. 
+vector_1<-c(5,6,7)
+vector_2<-c(3,4,5)
+
+
+matrix_examp<-(c(vector_1, vector_2))#This function does nothing to combine the vectors to create an matrix. 
+matrix_examp
+#To create a vector use the code format as described below. 
+
+
+matrix_examp<- cbind(vector_1, vector_2)#Bind two vectors in accordance to fit the collums.
+matrix_examp<-rbind(vector_1, vector_2)#Bind to vectors in accordance to fit rows. 
+
+row.names(matrix_examp)<-c("Con 1", "Con 2", "Con 3")
+colnames(matrix_examp)<-c("1","2")
+#This is how I should have appreached my data analysis for my dissertstion.  
+
+matrix_examp
+
+my_values<-c(1,2,3,4,5,6,7,8,9)
+my_colums<-c("Red", "Green", "Blue")
+my_rows<-c("Indiv 1", "Indiv 2", "Indiv 3")
+
+matrix_examp<-matrix(my_values, nrow=3, ncol=3, dimnames=list(my_colums,my_rows))
+#A means of understanding the relationship that i within the data set. 
+
+rowSums(matrix_examp)
+colSums(matrix_examp)
+colMeans(matrix_examp)
+rowMeans(matrix_examp)
+#These are examples of how the data can be summerised. 
+
+rbind(matrix_examp, c(5,3,9))#With this example it is important to include the information that pertains specifically to this data set.
+
+matrix_examp
+
+matrix_examp+7
+martrix_examp*7
+
+#Specific elements can be muliplyed and added to the elements that are withina matrix. 
+
+vector_1<-c(10,11,12)
+vector_2<-c(11,15,16)
+
+matrix_examp_2<-cbind(vector_1,vector_2)
+
+matrix_examp_3<-matrix_examp + matrix_examp_2
+matrix_examp_3
+#It is also possible for matrix to be engaged in arithmetic. Matrix can be divided, muliplyed, added, and subtracted from each other. 
+
+#The findings form this experiment indicate that there is a significant difference between what is know and what is not know with respect this particular phenomena.
+
+#Note that the elements that are within a vector must be of the same data type. 
+
+###################################################################################################################################################################
+###Factors: 
+
+#Factors are finite data with distinction categories. 
+#This type of data type can not be expanded upon.
+#An example of an factor is a blood type. 
+
+blood <- factor(ordered=FALSE, c("A", "B", "AB", "O"))
+
+#This is important to understand that the data should not be expanded upon. \
+
+#Normal and ordinal data types. 
+
+#Ordinal are unrecorded data types. Meaning that there is no level that is associated with this data type.
+#Ordinal data has a natural order, an example of this is difficulty. Easy>Medium>Hard. Not how there is a natural progression that is assoicated with this data type. 
+
+difficulty<-c("Easy", "Medium", "Hard", "Hard")
+f<-factor(difficulty, ordered=TRUE, level=c("Easy", "Medium", "Hard"))
+#Using this method it is possible to specify the type of data that is being investigated. 
+#Note that the order that the elements are lied in determines the level. 
+
+c(blood[1], blood[2], blood[3], blood[4])
+
+c(f[1], f[2], f[3])
+#R for some reason specified this data to only one level. This is incorrect in some sense. 
+
+blood[1]>blood[2]
+#Correct given that the element within the blood variable is a character. R has no way of distinguishing if one character is greater than another. 
+#The data was adjusted, so that there is no order associated with the blood group, which the consequence being that there was an error message that produced with this output.   
+#It is not possible to compare non-ordered factors that are found in R. If there is no level there is nothing to compare the factors against. 
+
+#Renaming the levels of a factor and renaming levels. This code serves as a template for renaming factors that are within a variable. 
+
+v<-c("One", "Two", "Three")
+v<-factor(v, ordered=TRUE, level=c("One", "Two", "Three"))#For some reasons the factors are in the order of 1,3,2, instead of 1,2,3. 
+levels(v)<-c(1,2,3)#These were factored but there order was not specified by R.
+v
+v[1]>v[2]
+#This code works there was a small error with the data set that is now resolved. 
+
+#Summarising variables: 
+#Using the  summaries function it is possible to know how much data points is within a factor or a vector.
+
+
+f[1]>f[2]
+summary(difficulty)#Provides a summary of the elements that are within a vector.
+summary(f)#Provides a summary of the information that is within the factor data set. 
+
+###################
+
+#Data frames: 
+#Unable to load up the following data set, so create it myself. 
+
+France<-c(67,"FALSE","Europe")
+Austria<-c(9,"TRUE","Europe")
+Thialand<-c(70, "FALSE", "Asia")
+
+Countries_Data_Set<-rbind(France,Austria,Thialand)
+colnames(Countries_Data_Set)<-c("Pop_Mil", "Landlocked", "Countinent")
+
+str(Countries_Data_Set)
+#By creating the data the way that i did i am unable to change the data type. Construct the data in terms of columns.
+
+Pop_Mill<-c(67,9,70)
+
+Landlocked<-c("FALSE","TRUE","FALSE")
+Landlocked<-as.logical(Landlocked)
+
+Countinent<-c("Europe", "Europe", "Asia")
+Countinent<-factor(Countinent, ordered = FALSE)#No need to add a level because there is no order.
+
+Countries_Data_Set<-cbind(Pop_Mill, Landlocked, Countinent) ###This should be for creating matrix. In a matrix all of the data is the same. 
+#That is the reason why all of the elements within this data set are set to characters and I am unable to change it 
+row.names(Countries_Data_Set)<-c("France","Austria","Thialand")
+
+Countinent_Data_set<-data.frame(Landlocked, Countinent, "Population per Million" =Pop_Mill)#Use the data frame variable to create a data frame, 
+#Note that: using the data.frame function it is possible to change the names of the vectors within the data frame. This is will save alot of time. 
+
+View(Countinent_Data_set)
+str(Countinent_Data_set)#The data is now in the correct type of data format. 
+head(Countinent_Data_set)
+tail(Countinent_Data_set)
+#Both ar effective ways of representing the  data of interest. 
+
+#Selecting data within an data frame. 
+#Similar to selecting a data frame within a matrix
+
+Countinent_Data_set[1:2,"Countinent"]
+
+Countinent_Data_set$Population.per.Million[1]
+
+Coutinent_Data_set[c(FALSE,TRUE,TRUE)]
+
+subset(Countinent_Data_set,Pop_Mill>10)
+#Another way, using the dollar sign($), to represent certain aspects of the data, and using logical operations for specific rows, also using the greater specific function it is possible to highlight specific data points that i wish to be removed. 
+#In summary the two ways of representing the data is in the []format and the $ format. 
+
+#The function of the order function in better structuring data frames: 
+
+Positions<- order(Countinent_Data_set$Population.per.Million)#Setting the grounds form which the variable should be ordered with, and then using the [] function to select specific data using the vector that was previously created with. 
+Countinent_Data_set[Positions,] 
+#This functions allows for the data frame to be ordered in such a way that the variables are available. 
+#This output of this function can then in principle be manipulated if need be. 
+
+
+##########List:
+
+#A list in R allows you to gather a variety of different information together. The information can be variety of different information, which includes matricies, vectors, data frames. 
+
+#For example: 
+
+vec<-1:6 
+mat<-matrix(1:6, ncol=2)
+df<-data.frame(x="one", y=8, z=FALSE) #An interesting way of creating a data frame in R.
+#In such an example the variables within the data frame would have to be changed. 
+
+my_list<-list(vec,mat,df)
+print(list)
+
+#Using the list function it is possible to rename the vectors that are within the lists.
+my_list<-list(vec1=mat, vec2=vec, vec3=df)
+
+print(my_list)
+
+#Extending a list in R. 
+short<-list(a=1, b=2)
+short<-c(short, c=3)
+print(short)
+
+#Selecting specific components that are within a list: 
+Moviename<-("titanic")
+Actors<-c("L DipCaprio", "K winslet", "B Zane")
+
+titanic_list<-list(Moviename, Actors)
+print(titanic_list)
+
+titanic_list[[2]]
+titanic_list[[1]]
+
+titanic_list[["Actors"]]
+titanic_list[["Movienames"]]
+
+titanic_list$Movienames 
+titanic_list$Actors
+
+#Different ways of highlighting the the data within an list. 
+#Note that the same rules apply when selecting information within a matrix. 
+#And within a small addition to this information it is possible to be more specific with the data. 
+
+#For example: 
+titanic_list[[2]][1]
+titanic_list[[1]][1]
+titanic_list[["Actors"]][1]
+titanic_list$Actros[1]
+
+#For some reason i can not call the data using the name of the vector as specified in creating the list. 
+#For the sake of time, stick to using the numbers, as indicated above to call the data. 
+
+print(titanic_list)
+
+#Adjust the list variable name so that the name of the vectors can be called using the name of the vector as intended. 
+titanic_list<-list("[1]"="moviename", "[2]"="actor")
+print(titanic_list)
+
+###############################################INTRODUCTION TO R-COMPLETE#######################################################################################
+################################################################################################################################################################
+library(tidyverse)
+library(ggplot2)
+######
+
+#Practice task: 
+
+#Input my dissertation data into the sample: 
+#Create vectors for the data set, in columns. 
+#Using the data.frame argument construct my data. 
+#Then using the list argument construct a list for my data set. 
+
+Mg_Zero<-c(0.0215,0.03714,0.0291,0.22743,0.22781,0.22823)
+Mg_One<-c(0.22859,0.21095,0,0,0,0)
+Mg_One_hundred<-c(0.0471,0.022,0.0311,0.23307,0.22907,0)
+Mg_Three_hundred<-c(0.0418, 0.0677,0.0069,0,0,0)
+Mg_Five_hundred<-c(0.0656,0.0491,0.0526,0,0,0)
+Compound<-c("Magnesium","Magnesium","Magnesium","Magnesium","Magnesium","Magnesium")
+
+Mg<-data.frame(Mg_Zero,Mg_One,Mg_One_hundred,Mg_Three_hundred,Mg_Five_hundred,Compound)
+
+Mn_Zero<-c(0.0215,0.0341,0.0231,0.011,0.0192,0.022,0.0257,0.0278,0.043)
+Mn_One<-c(0.0337,0.034,0.0221,0,0,0,0,0,0)
+Mn_Two<-c(0.035,0.0092,0.0102,0,0,0,0,0,0)
+Mn_Ten<-c(0.0061,0.0056,0,0,0,0,0,0,0)
+Mn_Thirty<-c(0.0064,0.035,0.0085,0,0,0,0,0,0)
+Mn_Fifty<-c(0.0095,0.0246,0.092,0,0,0,0,0,0)
+Mn_Hundred<-c(0.0191,0.022,0.0311,0.0093,0.0094,0.0118,0,0,0)
+Mn_Three_hundred<-c(0.0418,0.0677,0.0699,0,0,0,0,0,0)
+Mn_Five_hundred<-c(0.0563,0.0491,0.0526,0,0,0,0,0,0)
+Compound<-c("Manganese","Manganese","Manganese","Manganese","Manganese","Manganese","Manganese","Manganese","Manganese")
+
+Mn<-data.frame(Mn_Zero,Mn_One,Mn_Two,Mn_Ten,Mn_Thirty,Mn_Fifty,Mn_Hundred,Mn_Three_hundred,Mn_Five_hundred,Compound)
+
+Zn_Zero<-c(0.045,0.0633,0.0333,0.0382,0.0108,0,0,0,0)
+Zn_One<-c(0.0151,0.038,0.0355,0,0,0,0,0,0)
+Zn_Fifty<-c(0.0464,0.0535,0.0206,0,0,0,0,0,0)
+Zn_One_Hundred<-c(0.0104,0.0384,0.0169,0.023,0.017,0.0189,0,0,0)
+Zn_Three_Hundred<-c(0.0395,0.0344,0,0,0,0,0,0,0)
+Zn_Five_Hundred<-c(0.089,0.019,0,0,0,0,0,0,0)
+Compound<-c("Zinc","Zinc","Zinc","Zinc","Zinc","Zinc","Zinc","Zinc","Zinc")
+
+Zn<-data.frame(Zn_Zero, Zn_One, Zn_Fifty, Zn_One_Hundred, Zn_Three_Hundred, Zn_Five_Hundred,Compound)
+
+#Correctly format the data so that it is in correct structure. 
+#Adding a concentration, weight and solution column. 
+
+Mg <- Mg %>% pivot_longer(!Compound, names_to="Concentration(mM)", values_to="weight(g)")
+Mn <- Mn %>% pivot_longer(!Compound, names_to="Concentration(mM)", values_to="weight(g)")
+Zn <- Zn %>% pivot_longer(!Compound, names_to="Concentration(mM)", values_to="weight(g)")
+
+Dissertation_Data<-list(Mg,Mn,Zn)
+
+Dissertation_Data<-Reduce(function(x, y) merge(x, y, all=TRUE), Dissertation_Data)#Using a Tidyverse this is an effective way of combining the data that is within a list. 
+view(Dissertation_Data)
+#Successfully combined all the data in a good format. 
+
+ 
+#Data exploration:
+#Perform a statistical test within, and between each data set. sould be doing general linear model, or a generalized linear model.
+
+
+#Model Assumptions: 
+#. A Linear Relationship between predictors & the mean of Y
+#. Equal variances (homoscedastic) - Residual plot
+#. Errors are normally distributed (diagnosed by QQ-plots)s#. Errors are independent of (x) - Residual plot
+
+#Forgot how to use  the various functions of the gpplot.
+#The group by and the summary functions i have forgotten how to use. 
+
+
+head(Dissertation_Data)
+
+Zinc_graph<-Dissertation_Data %>%
+  geompoint(x=)
+
+#Things to do: 
+
+#Need to change some of the values of the data set. 
+#Data exploration
+#Check for model assumptions
+#Produce a linear model explain the data that i am interested in. 
+
+#R work that has been completed thus far. 
+
+####################################
