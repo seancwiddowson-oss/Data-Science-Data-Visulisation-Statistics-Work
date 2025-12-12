@@ -1,0 +1,164 @@
+library(tidyverse)
+library(GGally)
+library(ggridges)
+library(ggplot2)
+library(dplyr)
+library(skimr) 
+library(patchwork) 
+library(RColorBrewer)
+library(scales)
+library(png)
+library(grid)
+library(ggimage)
+
+covid_19_good<-read_csv("Data/age related cases of COVID-19.csv") #THE READING OF MY DATA 
+view(covid_19_good)
+
+#PIVOT OF THE DATA SO THAT THE DATA IS IN THE LONG FORM.
+covid_19_good <- covid_19_good %>%
+  pivot_longer(!Date, names_to="Age", values_to="Percentage of the population that test positive for covid-19")
+
+#RENAMING THE VARIOUS VARIABLES IN THE DATA. 
+covid_19_good <-rename(covid_19_good,
+                       age=Age,
+                       date=Date,
+                       percentage_of_the_population_that_test_positive_for_covid_19="Percentage of the population that test positive for covid-19")
+
+
+#IN ORDER TO PLOT THE DATES IN THE DATA SET THE DATA MUST BE IN THE DATE FORMAT. 
+#THIS LINE OF CODE PREPARES THE DATA TO BE TRANFORMED INTO THE DATE FORMAT
+covid_19_good$date <- gsub("12-Sep-20", "12/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("13-Sep-20", "13/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("14-Sep-20", "14/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("15-Sep-20", "15/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("16-Sep-20", "16/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("17-Sep-20", "17/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("18-Sep-20", "18/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("19-Sep-20", "19/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("20-Sep-20", "20/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("21-Sep-20", "21/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("22-Sep-20", "22/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("23-Sep-20", "23/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("24-Sep-20", "24/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("25-Sep-20", "25/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("26-Sep-20", "26/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("27-Sep-20", "27/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("28-Sep-20", "28/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("29-Sep-20", "29/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("30-Sep-20", "30/09/2020", covid_19_good$date)
+covid_19_good$date <- gsub("01-Oct-20", "01/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("02-Oct-20", "02/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("03-Oct-20", "03/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("04-Oct-20", "04/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("05-Oct-20", "05/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("06-Oct-20", "06/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("07-Oct-20", "07/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("08-Oct-20", "08/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("09-Oct-20", "09/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("10-Oct-20", "10/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("11-Oct-20", "11/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("12-Oct-20", "12/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("13-Oct-20", "13/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("14-Oct-20", "14/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("15-Oct-20", "15/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("16-Oct-20", "16/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("17-Oct-20", "17/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("18-Oct-20", "18/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("19-Oct-20", "19/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("20-Oct-20", "20/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("21-Oct-20", "21/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("22-Oct-20", "22/10/2020", covid_19_good$date)
+covid_19_good$date <- gsub("23-Oct-20", "23/10/2020", covid_19_good$date)
+#THE ADJUSTMENT OF THE DATE FORMAT INTO NUMBERS. THE FORMAT IS BETTER SUITED FOR GRAPHS.
+  #In order to proceed with converting data from the character class to the numeric class. 
+  #The data first need to be removed of all character. 
+  #Only numeric data can remain. 
+  #Before converting the "percentage of the population that tests positive for covid-19 into a numeric variable the "%" needs to be removed from the data set. 
+  #The as.numeric variable can the be utilized without error. 
+
+#THE COVERSION OF THE INFOMATION INTO THE DATE FORMAT.
+covid_19_good$date <- as.Date(covid_19_good$date,"%d/%m/%Y")
+
+#IN ORDER TO PLOT THE DATA IN GGPLOT THE DATA TYPE NEEDS TO BE IN THE NUMERIC FORM.
+#THE CHARACHTER "%" MUST BE REMOVED FROM THE DATA SET .
+covid_19_good$percentage_of_the_population_that_test_positive_for_covid_19 <- gsub("%","",covid_19_good$percentage_of_the_population_that_test_positive_for_covid_19)
+
+#THE COVERSION OF THIS INFOMATION INTO A NUMERIC FORMAT. ALLOWS FOR THE INFOMATION TO BE PLOTTED IN GGPLOT. 
+covid_19_good$percentage_of_the_population_that_test_positive_for_covid_19<- as.numeric(as.character(covid_19_good$percentage_of_the_population_that_test_positive_for_covid_19))
+
+
+data_exploration <- covid_19_good %>% ggplot(aes(x=age,
+                                                 y=percentage_of_the_population_that_test_positive_for_covid_19))+
+  geom_boxplot()+
+  theme(axis.text.x = element_text(angle=90))
+
+good_graph <- covid_19_good %>%
+  ggplot(aes(x=date,
+             y=percentage_of_the_population_that_test_positive_for_covid_19,
+             colour=age))+ #THE INFOMATION WITHIN THIS DATA SET IS TO BE GROUPED BY THE AGE, THE COLOUR IN THE GRAPH SHOULD ALSO APPEAR IN ACCORDANCE WIT THE AGE. 
+  geom_line(size=1.2)+#ADDITION OF A LINE TO THE GRAPH
+  theme_classic()+
+  labs(x="Date",
+       y="Percentage of tests positive for Covid_19 (%)",
+       title="Covid-19: Percentage of tests positive for Covid-19 in different age group",
+       caption = "Data source: The office of national statistics")+ #THIS LINE OF CODE ADJUST THE x, y, CAPTIONS OF MY GRAPH.
+  scale_x_date(date_breaks = "8 days")+  #THE X_ AXIS LABLES ARE TOO SPARTATIC-THIS FIXES THAT ISSUES
+  theme(axis.text.x = element_text(angle=39, vjust=1, hjust=1, color = "black", size= 13),
+        axis.text.y =element_text(color= "black", size=13), #THE ADJUSTMENT OF THE ANGLES OF THE TITLES IN MY X-AXIS. IT MAKES THE DATA EASIER TO READ. 
+        axis.title = element_text(colour="black", size=15, face="bold"), 
+        plot.title = element_text(family="Helvetica", face="bold", size= (17)), #ADJUSTMENT OF THE LOOK OF THE TITLE.  
+        plot.caption = element_text(color = "Grey49",size=12, face = "italic"), #ADJUSTMENT OF THE LOOK OF THE CAPTION.
+        panel.background = element_rect(fill = 'grey98'), #THE ADJUSTMENT OF THE BACKGROUD OF MY GRAPH
+        plot.background= element_rect(fill='grey98'), 
+        panel.grid.major.y = element_line("slategrey", size=0.3),#ADDING HORIZONAL GRID LINES TO MY GRAPH
+        legend.title=element_blank()) #THE REMOVAL OF THE LEGEND TITLE
+
+dark2_palette <- brewer.pal(7,"Dark2") #THE CREATION OF A CUSTOM PALLET. 
+good_graph<- good_graph + 
+  scale_color_manual(values=dark2_palette) #ASSAIGNING THE CUSTOM PALLET TO MY DATA SET. 
+
+good_graph #COMPLETION OF MY GOOD GRAPH. 
+
+covid_19_bad<-read_csv("R.Data/age related cases of COVID-19.csv") #THE READING OF MY DATA 
+covid_19_bad <- covid_19_bad %>%
+  pivot_longer(!Date, names_to="Age", values_to="Percentage of the population that test positive for covid-19") 
+covid_19_bad <-rename(covid_19_bad,
+                      AGE=Age,
+                      DATE=Date,
+                      PPERCENAGE_OF_THE_POPULATION_THAT_TESTS_POSITIVE_FOR_COVID_19="Percentage of the population that test positive for covid-19")
+covid_19_bad$PPERCENAGE_OF_THE_POPULATION_THAT_TESTS_POSITIVE_FOR_COVID_19 <- gsub("%","",covid_19_bad$PPERCENAGE_OF_THE_POPULATION_THAT_TESTS_POSITIVE_FOR_COVID_19)#THE REMOVAL OF THE "%" FORM THE DATA SET. SO THAT THE INFOMATION CAN BE COVERTED FROM A CHARACTER TO A NUMBER FORMAT. 
+covid_19_bad$PPERCENAGE_OF_THE_POPULATION_THAT_TESTS_POSITIVE_FOR_COVID_19<- as.numeric(as.character(covid_19_bad$PPERCENAGE_OF_THE_POPULATION_THAT_TESTS_POSITIVE_FOR_COVID_19))#THE CONVERSION OF THE DATA SET FROM A CHARACTER TO A NUMBER FORMAT. THIS ALLOWS FOR THE FORMATION OF A GRAPH.
+covid_19_bad <- group_by(covid_19_bad, AGE) #GROUPING THE DATA BY AGE
+covid_19_bad_mean <- summarise(covid_19_bad, MEAN=mean(PPERCENAGE_OF_THE_POPULATION_THAT_TESTS_POSITIVE_FOR_COVID_19)) #CREATING A SUMMARY OF THE INFOMATION. THE MEAN OF THE THE COVID-19 CASES HAS BEEN CALCULATED TO CORRESPOND WITH THE VARIOUS AGES. 
+
+image<-readPNG("ImageForBadGraph.png")#THE READING OF A PNG IMAGE
+
+bad_graph <- covid_19_bad_mean %>%
+  ggplot(aes(x=AGE,
+             y=MEAN,
+             fill=AGE))+ #FORMATION OF A BASIC GGPLOT GRAPH
+  annotation_custom(rasterGrob(image, 
+                               width = unit(1,"npc"),
+                               height = unit(1,"npc")), #ADDING AN IMAGE TO MY GRAPH
+                    -Inf, Inf, -Inf, Inf) +
+  geom_bar(stat="identity")+ #PRODUCTION OF A BASIC GGPLOT LINE GRAPH.
+  labs(x="age",
+       y=" precentage of covid-19 tests positive fpr covid-19 ",
+       title="average covid-19 results according to the age",
+       fill="")+ #AJUSTING THE TITLES TO MY GRAPH
+  theme_classic()+
+  theme(panel.grid.major.x = element_line("slategrey", size=0.7), #AN ADJUSTMENT OF THE LABLES IN MY GRAPH.
+        panel.background = element_rect(fill = 'deeppink'), #CHANGING THE BACKGROUND OF MY GRAPH.
+        plot.background= element_rect(fill='deepskyblue'), #CHANGING THE COLOURS OF THE BACKGROUND OF MY GRAPH.
+        legend.title=element_blank())
+bad_graph <- bad_graph +
+  theme(axis.text.x = element_text(angle=90, vjust=1, hjust=1))#THE AJUSTMENT OF THE X-AXIS TITLES SO THAT THE VARIOUS POINTS DONT OVERLAP.
+bad_graph <- bad_graph +
+  scale_fill_manual("legend", values = c("Age 2 to School Year 6"= "green",
+                                         "Age 25 to Age 34"= "green",
+                                         "Age 35 to Age 49"= "green",
+                                         "Age 50 to Age 69"= "green",
+                                         "Age 70+"="green",
+                                         "School Year 12 to Age 24"= "green",
+                                         "School Year 7 to School Year 11"="green"))#ASSIGNMENT OF COLOURS TO THE BARS IN THE PLOT.
+bad_graph
