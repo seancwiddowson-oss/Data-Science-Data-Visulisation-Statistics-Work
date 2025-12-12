@@ -1,0 +1,329 @@
+---
+title: "Summative assiagnment 2: 100196987"
+author: "Sean Widdowson"
+date: "25/05/2021"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, results='hide'}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2) 
+library(readr)
+library(dplyr)
+library(plyr)
+library(forcats)
+library(rcompanion)
+library(rsq)
+```
+
+
+```{r setup, include=FALSE, echo=FALSE, results='hide'}
+Ladybird <- read_csv("Ladybird.csv")
+
+#Remove rows 74 and 76 from my data. 
+Ladybird<-Ladybird[-c(74,76,17), ]
+
+#Removal of NA results
+Ladybird<-Ladybird %>%
+  drop_na(Mass.per.area)
+
+#Changing the data type
+Ladybird<-Ladybird %>%
+  mutate(Sex=as.factor(Sex))
+Ladybird<-Ladybird %>%
+  mutate(Mass.per.area=as.numeric(Mass.per.area))
+Ladybird<-Ladybird %>%
+  mutate(Colour.morph=as.factor(Colour.morph))
+
+#Rounding the data up,so the data is count data
+ceiling(Ladybird$Right.mean)
+```
+
+## How the relationship of vigour/condition and size varies with colour morph and sex in Adalia bipunctata. 
+
+## Abstract: 
+
+The condition/vigour of an individual is an important concept in ecology. Countless methods are used as markers for estimating the condition/vigour of an individual. There is no consensus on the most appropriate marker.  This report investigate the relationship of the time taken for a.bipunctata to right itself once tipped over, a measure of vigour/condition and the size(g/mm2) in different Sex and colour morphs. To investigate the relationship between right time and size(g/mm^2) a general linear mode; with the size of a.bipunctata as a continuous variable against the right time as a continuous predictor. Sex and colour morph were integrated into the general linear model as factorial predictor. All my models showed no-significant relationships with right time(p>0.05). A significant interaction effect was observed in colour morph(p>0.05).
+
+## Introduction: 
+
+Body size is linked to an organism’s vigour/condition. Changes in the body size have been shown to affect the survivability of individuals and population, also ecosystem function through various size dependent process. Understanding body size variation and the relationship to condition/vigour is therefore likely to shed light on lager size dependent process in organism(Honĕk, A. 1993). In this report I will be investigating the relationship of the time taken for a.bipunctata to right itself once tipped over, a measure of vigour/condition and the size(g/mm^2) in different Sex and colour morph.
+
+
+## How the size (g/mm^2) of Adalia bipunctata effects the vigour/condition of long beetles. 
+
+I hypothesised an inversely proportional relationship between size and vigour/condition of A.bipunctata. Given the test for vigour/condition is the how long it took A.bipuncata to right themselves once being tipped, I considered that larger A.bipuncata may have more difficulties in righting themselves once being tipped than smaller A. bipunctata. 
+To investigate this hypothesis, I investigated the relationship between the size(g/mm^2) and the right time(s) as a count. This was fitted as a generalised linear model with a poison error distribution and a log linker. A quasi-likelihood model was fitted to account for the over-dispersion of the data. 
+An type II ANOVA (F=0.7577, Df:1, P>0.05, R^2=0.01679739) of my model showed that there is no significant relationship between the size of A.bipunctata and the vigour/condition. The general linear mode show that for every 1g/mm^2 in size there is an average log increase of 1411.276 for the time needed for the A bipunctata to right itself. When the Size of A.bipunctata is zero the log intercept is 2.086. 
+Despite there being no significant relationship between right time(s) and body size, there is a positive correlation between right time(s) and body size(g/mm2) in my data sets. 
+In an experiment were fecundity is measured as a form of condition/vigour a significant relationship was observed between fecundity in genus Nephotettic and viviparous and body mass (Gunnarsson Bengt 1999). In a separate study when all other factors were considered for, the survivability of spiders during the winter months and the body mass of the spider was not statistically significant (H Merida 1997). These examples show that the relationship between body mass and vigour/condition is not consistent across all arthropods. Different environmental factors may affect this relationship. 
+Researchers investigating the condition of Arthropods consistently use different morphological measurements of arthropods as a measure of condition/vigour. The right time is not used as a measurement of condition/vigour. If, the right time is an acceptable form of measuring the vigour and condition of A.bipuncata then the relationship observed in the model is consistent with these findings. 
+
+```{r echo=FALSE}
+#General linear Model
+model_count_no_inter <- glm(Right.mean~Mass.per.area, data=Ladybird, family=quasipoisson(link="log"))
+summary(model_count_no_inter) #Note that the interaction effect :sex was removed because the ANOVA results suggested that there was no interaction effect in my model. 
+#Overdipressed 
+
+rsq(model_count_no_inter) #0.01679739
+
+model_count_no_inter <- lm(Right.mean~Mass.per.area, data=Ladybird)
+summary(model_count_no_inter)
+
+
+broom::tidy(model_count_no_inter, exponentiate=T, conf.int=T)
+broom::glance(model_count_no_inter)
+
+
+#####
+tidy_ladybird <- broom::tidy(model_count_no_inter, conf.int=T)
+tidy_ladybird
+
+glance_ladybird <- broom::glance(model_count_no_inter, interval="confidence")
+glance_ladybird
+
+augment_ladybird <- broom::augment(model_count_no_inter, interval="confidence")
+augment_ladybird
+#####
+
+car::Anova(model_count_no_inter, type="II") 
+```
+
+
+```{r echo=FALSE, error=FALSE}
+
+Model_count_no_inter_plot<-Ladybird %>%
+  ggplot(aes(x=Mass.per.area,
+             y=Right.mean))+
+  geom_point(aes(x=Mass.per.area,
+                 y=Right.mean))+
+  theme_minimal()+
+  geom_smooth(method="lm", size=1.5,se = FALSE,fullrange=TRUE)+
+  scale_y_log10()+
+  theme_minimal()+
+  labs(x="Body wight to size ratio(g/mm^2)",
+       y="Log () time take for A.bipunctata to\n right itself once tipped over(s)",
+       title="The relationship between the right \n time and size in A.bipunctata ",
+       caption = "Data originally supplied by Dr Jen Perry")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle=39, vjust=1, hjust=1, color = "black", size= 10),
+        axis.text.y =element_text(color= "black", size=10), 
+        axis.title = element_text(colour="black", size=10, face="bold"), 
+        plot.title = element_text(family="Helvetica", face="bold", size= (12)),  
+        plot.caption = element_text(color = "Grey49",size=10, face = "italic"), 
+        panel.background = element_rect(fill = 'grey98'), 
+        plot.background= element_rect(fill='grey98'), 
+        panel.grid.major.y = element_line("slategrey", size=0.3),
+        legend.title=element_blank())+
+  scale_x_continuous(expand = c(0, 0), limit=c(0, 0.0015))
+Model_count_no_inter_plot
+```
+
+## How the relationship between size (g/mm2) of Adalia bipunctata and the vigour/condition of long beetles varies between sexes. 
+
+I hypothosised that the relationship between the size of A.bipuctata and the vigour/condition of long beetles may vary with the sex of the species. Given that there is a negative relationship between size(g/mm^2) and right mean(s), differences in male and female body size may result in the relationship between size and vigour/condition varying between sex. 
+To test this hypothesis, I compared body size as a continuous variable and Sex as a factorial predictor, the interaction term is the right time(s) as a count. This was fitted as a generalised linear model with a poison error distribution and a log linker. A quasi-likelihood model was fitted to account for the over-dispersion of the data. 
+No significant interaction effect of size and sex (X^2 ~1,76 =4933.6, p>0.05), suggests that that relationship between increasing the size and right mean is mostly the same across males and females. 
+When the body size is zero for males the log body vigour/condition is 3.0075 and when the body size is zero for female the log vigour/condition is 3.1218. The difference between the intercepts is 0.1144. The difference between male and female vigour/condition when the body size is zero is small and insignificant. The log increase in vigour/condition when the body size increases by 1 in females is 61.1049. The log increases in vigour/condition when the body size increases by 1 in males is 852.3601. The rate difference between males and female is 913.4650. There is a considerable difference of the rate of change of the two models, this account for the stepper gradient of male birds. As the body sized increases in males the right mean increases at a considerably higher rate than female birds (X2=0.18990, p>0.05, R^2F=0.005001863, R^2M= 0.094497).
+In a meta-analysis investigating how the body size of male and female effects the condition/vigour of odonates female body size was significantly positively correlative with the clutch size and longevity; both are measures of vigour/condition in the odonates. Body size of males was too significantly positively correlated with the longevity and various other measures of condition/vigour. Interestingly, in non-territorial male’s body size appears to have a much more significant impact on the condition/vigour of the species. The ladybird too is non-territorial, this may account for why males body size is correlated stronger to vigour/condition than female (N.Sokolovska, 2000). 
+
+```{r echo=FALSE, results='hide', include=FALSE, message = FALSE, warning = FALSE}
+#General linear Model
+#Sex
+model_count <- glm(Right.mean~Mass.per.area+Sex+Mass.per.area:Sex, data=Ladybird, family=quasipoisson(link="log"))
+summary(model_count) #Note that the interaction effect :sex was removed becauses the ANOVA results suggested that there was no interaction effect in my model. 
+#Overdepression is ...
+
+Ladybird$Sex <- recode_factor(Ladybird$Sex, F = "Female", M = "Male")
+Ladybird$Sex <- factor(Ladybird$Sex, levels = c("Female","Male"))
+
+main_effect_model <- glm(Right.mean~Mass.per.area+Sex, data=Ladybird, family =quasipoisson(link="log"))
+
+anova(model_count, main_effect_model, test="Chisq")  #Keep the interactive term             
+car::Anova(model_count, type="III")
+
+
+broom::tidy(model_count, exponentiate=T, conf.int=T)
+broom::glance(model_count)
+
+
+#####
+tidy_ladybird <- broom::tidy(model_count, conf.int=T)
+tidy_ladybird
+
+glance_ladybird <- broom::glance(model_count, interval="confidence")
+glance_ladybird
+
+augment_ladybird <- broom::augment(model_count, interval="confidence")
+augment_ladybird
+#####
+
+
+#R__Sex
+  #Male
+Ladybird_Female<-Ladybird[-c(2,4,5,6,8,9,15,10,17,23,25,26,28,29,31,36,37,38,40,42,
+                             45,47,49,53,54,55,57,59,61,62,64,65,66,68,69,71,73,75), ]
+Ladybird_Female<-Ladybird_Female[-c(8,9), ]
+
+model_Female<- glm(Right.mean~Mass.per.area, data=Ladybird_Female, family=quasipoisson(link="log"))
+summary(model_Female)
+rsq(model_Female) #0.1005853
+
+  #Female
+Ladybird_Male<-Ladybird[-c(1,3,7,10,11,12,13,16,17,19,20,21,22,24,27,30,32,33,
+                           34,35,39,41,43,44,46,48,50,51,52,56,58,60,63,67,70,72,
+                           74), ]
+Ladybird_Male<-Ladybird_Male[-c(7,39,40,41,42), ]
+
+Model_male<- glm(Right.mean~Mass.per.area, data=Ladybird_Male, family=quasipoisson(link="log"))
+summary(Model_male)
+rsq(Model_male) #0.0944979
+
+Ladybird$Sex <- recode_factor(Ladybird$Sex, F = "Female", M = "Male")
+Ladybird$Sex <- factor(Ladybird$Sex, levels = c("Male","Female"))
+
+```
+
+```{r echo=FALSE, error=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+Sex_plot<-Ladybird %>%
+  ggplot(aes(x=Mass.per.area,
+             y=Right.mean,
+             colour=Sex))+
+  geom_point(aes(x=Mass.per.area,
+                 y=Right.mean,
+                 colour=Sex))+
+  geom_smooth(method="lm",size=1.8,se = FALSE,fullrange=TRUE)+
+  scale_y_log10()+
+  labs(x="Body wight to size ratio((g/mm^2))",
+       y="Log () time take for A.bipunctata to right \n itself once tipped over(s)",
+       title="The relationship between the right time\n and size of male and female A.bipunctata ",
+       caption = "Data originally supplied by Dr Jen Perry")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle=39, vjust=1, hjust=1, color = "black", size= 10),
+           axis.text.y =element_text(color= "black", size=10), 
+           axis.title = element_text(colour="black", size=10, face="bold"), 
+           plot.title = element_text(family="Helvetica", face="bold", size= (12)),  
+           plot.caption = element_text(color = "Grey49",size=10, face = "italic"), 
+           panel.background = element_rect(fill = 'grey98'), 
+           plot.background= element_rect(fill='grey98'), 
+           panel.grid.major.y = element_line("slategrey", size=0.3),
+           legend.title=element_blank())+
+  scale_x_continuous(expand = c(0, 0), limit=c(0, 0.0010))
+Sex_plot
+```
+
+## How the relationship between size (g/mm^2) of Adalia bipunctata and the vigour/condition of long beetles varies between colour morphs. 
+
+I hypothesised that the relation between the colour morph of A.bibucta and the vigour/condition of long beetles may vary with the colour morph of the species. 
+To test the hypothesis, I compared size as a continuous variable and colour morph as a factorial predictor the interaction term is the right time is seconds as a count. This was fitted as generalised linear model with a poison error distribution and a log linker, A quasi likelihood model was fitted to account for the over-dispersion of the data. 
+A significant interaction effect of the size and colour morph (X^2 ~ 1, 76=4249.0 p<0.05) was calculated. So, the relation between increasing the size and right mean is different in the differing colour morphs. 
+When the size is zero for M the log right time is -4.250 and when the body size is zero for T the log vigour/condition 5.1846. The difference between the intercept is 9.435. The difference between the M and T intercept difference is 9.345. The log increase in the right time when the body size increases by 1 in M is 9034.753. The log increases in right time when the body size increases by in in T is -2966.6699. There a significant difference of the rate of change of the M and T colour morphs. For T as the size increases the vigour/condition decreases, for M as the size increases the right time decreases (F= 40.334 p<0.05 R^2T=0.1005853, R^2M = 0.1579649). 
+Little to research has been conducted investigating the relationship between vigour/condition and colour morphs. 
+
+```{r echo=FALSE, results='hide', include=FALSE, message = FALSE, warning = FALSE}
+model_count2 <- glm(Right.mean~Mass.per.area+Colour.morph+Mass.per.area:Colour.morph, data=Ladybird, family=quasipoisson(link="log"))
+summary(model_count2)
+#Overdepression is 64
+
+Ladybird$Colour.morph <- recode_factor(Ladybird$Colour.morph, T = "Typical", M = "Melanic")
+Ladybird$Colour.morph <- factor(Ladybird$Colour.morph, levels = c("Melanic","Typical"))
+
+tidy_ladybird2 <- broom::tidy(model_count2, conf.int=T)
+tidy_ladybird2
+
+glance_ladybird2 <- broom::glance(model_count2, interval="confidence")
+glance_ladybird2
+
+augment_ladybird2 <- broom::augment(model_count2, interval="confidence")
+augment_ladybird2
+#####
+
+main_effect_model2 <- glm(Right.mean~Mass.per.area+Colour.morph, data=Ladybird, family =quasipoisson(link="log"))
+
+anova(model_count2, main_effect_model2, test="Chisq") #Drop the interaction term              
+car::Anova(model_count2)
+
+
+broom::tidy(model_count2, exponentiate=T, conf.int=T)
+broom::glance(model_count2)
+
+#R__colour.morph
+  #T
+Ladybird_T<-Ladybird[-c(4,18,22,26,34,38,39,40,41,42,63,69,74,75), ]
+Ladybird_T<-Ladybird_T[-c(30), ]
+
+model_T<- glm(Right.mean~Mass.per.area, data=Ladybird_T, family=quasipoisson(link="log"))
+summary(model_T)
+rsq(model_T) #0.1005853
+
+
+  #M
+Ladybird_M<-Ladybird[-c(1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,23,24,25,
+                     27,28,29,30,31,32,33,35,36,37,43,44,35,46,47,48,49,50,51,
+                     52,53,54,55,56,57,58,59,60,61,62,64,65,66,67,68,70,71,72,73,
+                     76,77,78,79),]
+Ladybird_M<-Ladybird_M[-c(11), ]
+view(Ladybird_M)
+
+model_M<- glm(Right.mean~Mass.per.area, data=Ladybird_Female, family=quasipoisson(link="log"))
+summary(model_M)
+rsq(model_T) #0.1579649
+
+Ladybird$Colour.morph <- recode_factor(Ladybird$Colour.morph, T = "Typical", M = "Melanic ")
+Ladybird$Colour.morph <- factor(Ladybird$Colour.morph, levels = c("Typical","Melanic"))
+```
+
+```{r echo=FALSE, error=FALSE}
+Colour_plot<-Ladybird %>%
+  ggplot(aes(x=Mass.per.area,
+             y=Right.mean,
+             colour=Colour.morph))+
+  geom_point(aes(x=Mass.per.area,
+                 y=Right.mean,
+                 colour=Colour.morph))+
+  geom_smooth(method="lm",size=1.8,se = FALSE,fullrange=TRUE)+
+  scale_y_log10()+
+  labs(x="Body wight to size ratio((g/mm^2))",
+       y="Log () time take for A.bipunctata to right \n itself once tipped over(s)",
+       title="The relationship between the right time \n and size of male and female A.bipunctata ",
+       caption = "Data originally supplied by Dr Jen Perry")+
+  theme_classic()+
+  theme(axis.text.x = element_text(angle=39, vjust=1, hjust=1, color = "black", size= 10),
+        axis.text.y =element_text(color= "black", size=10), 
+        axis.title = element_text(colour="black", size=10, face="bold"), 
+        plot.title = element_text(family="Helvetica", face="bold", size= (12)),  
+        plot.caption = element_text(color = "Grey49",size=10, face = "italic"), 
+        panel.background = element_rect(fill = 'grey98'), 
+        plot.background= element_rect(fill='grey98'), 
+        panel.grid.major.y = element_line("slategrey", size=0.3),
+        legend.title=element_blank())+
+  scale_x_continuous(expand = c(0, 0), limit=c(0, 0.0010))
+Colour_plot
+```
+
+## Conclusion:
+
+The results show that there is a non-significant positive correlation between the body size and the vigour/condition of A.bipunctata. The relationship between body size, right time varies considerably with sex. No significant interaction effect was observed for the Male and female. Despite the absence of a significant interaction effect there were considerable differences in the log right time when the body size increases by 1 in males and female. A significant interaction effect between the body size, right time of typical and melanic colour morphs was observed. However, my ability to make conclusions form the data are affected by the sample size of melanic A.bipunctata. These finding provide additional evidence for the use of measurements of body size as a measure for vigour/condition. A positive correlation is observed between body size and vigour/condition.  The body size (g/mm^2) is a poor measure of vigour/condition, as indicated by the R^2 measurements for my model. Despite this there is a positive non-significant correlation between the body size and vigour. No significant difference between Sex and measures of vigour/condition, but male A.bipunctata may have a different relationship due to non-territorial behaviour. Why non-territorial behaviour in male arthropods results in body mass having a different relationship with vigour/condition is not yet understood. Little information has been published highlighting how the colour morph in arthropods affects the vigour/condition. This report may highlight a potential area of research. The limited sample size of melanic individuals makes it difficult to draw strong conclusion form analysis of the data. But there is a strong interaction effect between typical and melanic individuals. Highlighting the need to investigate this with a greater sample size. 
+Individuals with better body condition/vigour have an increased likelihood of survival in unfavourable conditions. In my model I examined how the right time, a measure of the vigour/condition varies with the size(g/mm2). Despite, the right time being a useful measures of vigour/ condition other markers for vigour/condition have frequently been used. Potential alternatives are lifespan, reproductive success, migration success, number of fit offspring are all possible alternatives (M.Knapp 2013). Several studies have opted to use the length, width and body mass in as continuous variables in a multiple linear regression model (J.Peig 2010) . This report has fails to show that body size is positively related to vigour/condition of A.bipunctata, but there were several non-significant relationships that still show a trend. Much of my modelling was a poor fit. Alterations to measurements of vigour and size of A.bipunctata may improve the strength of the statistical analysis and thus allow to for more robust analysis and conclusion. 
+
+## References:
+
+*Data originally supplied by Dr Jen Perry
+Gunnarsson Bengt (1999) ‘Body size and Survival: implication for an overwintering spider’ Oikos 52: 274-282 Available at: https://www.jstor.org/stable/pdf/3565200.pdf (Accessed date: 20/05/2021) 
+
+*Huha Merida and Erik sevens son (1997) ‘Are fat reserves in migratory birds affected by conditions in early life?’ vol. 28 no. 4 pp. 279-286, Journal of avian biology. Available at: https://www.store.org/stable/367940  (Accessed date: 20/05/2021)
+
+*Honĕk, A. (1993). Intraspecific variation in body size and fecundity in insects: A general relationship. Oikos, 66, 483– 492. Available at: https://doi.org/10.2307/3544943 (Accessed date: 23/05/2021) 
+
+*Jordi Peig, Andy J. Green (2010) ‘The paradigm of body condition: a critical reappraisal of current methods based on mass and length’ Volume 24, Issue 6/ p.1324-1332, Function Ecology, Available at: https://besjournals.onlinelibrary.wiley.com/doi/10.1111/j.1365-2435.2010.01751.x , (Accessed date: 22/05/2021)
+
+*Michal Knapp, Jana Knappova (2013) ‘Measurement of Body Condition in a Common Carabid Beetle, Poecilus cupreus: A comparison of Fresh Weight, Dry Weight, and Fat Content’ 13: 6. J Insect Sci, Available at: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3735054/#bibr10 , (Accessed date: 25/05/2020) 
+
+*Natalia Sokolovska, Locke Rowe and Frank johansson (2000) ‘Fitness and body size in mature odonates’. 25, 239-248, Ecological Entomology, Available at: https://www.onlinelibrary.Wiley.com/doi/epdf/10..1046/j.1365-2311.2000.00251.x (Accessed date:21/05/2021) 
+
+
+
+
+
