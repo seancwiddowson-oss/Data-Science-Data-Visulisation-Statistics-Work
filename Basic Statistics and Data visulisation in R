@@ -1,0 +1,501 @@
+library(tidyverse)http://127.0.0.1:16961/graphics/plot_zoom_png?width=635&height=822
+library(dplyr)#No need for the dplyr function, included in the tidyverse package. 
+library(ggpubr)
+library(rmarkdown)
+
+#Independent research statistical work
+
+#Question 1:
+
+sequence<-runif(n=600, min=1, max=6)
+sequence<-round(sequence, digits=0)
+sequence_values<-sample(1:600, 600)
+sequence_dataset<-cbind(sequence_values, sequence)
+sequence_dataset<-as.data.frame(sequence_dataset)
+
+sequence_dataset<-sequence_dataset[order(sequence_dataset$sequence_values, decreasing = FALSE),]
+
+plot<-ggplot(data=sequence_dataset, 
+             aes(x=sequence_values, y=sequence),
+             geom_point(aes(x=sequence_values, y=sequence)))
+
+#Useful code when trying to alter the structure of data. 
+
+#Data for creating the various data points. 
+
+plot_a<-sequence_dataset %>%
+  ggplot(aes(x=sequence_values, y=sequence))+
+  geom_point(aes(x=sequence_values, y=sequence))
+plot_a
+
+
+plot_b<-sequence_dataset %>%
+  ggplot(aes(x=sequence))+
+  geom_histogram(aes(x=sequence))
+plot_b
+
+#b)
+
+sequence_b<-runif(n=600, min=1, max=6)
+sequence_b<-round(sequence_b, digits=0)
+sequence_b<-sequence+sequence_b
+sequence_dataset_b<-cbind(sequence_values, sequence, sequence_b)
+sequence_dataset_b<-as.data.frame(sequence_dataset_b)#Important to ensure that the data is in the structure of a data frame. 
+
+plot_b<-sequence_dataset_b %>%
+  ggplot(aes(x=sequence_b))+
+  geom_histogram(aes(x=sequence_b))
+plot_b#When plotting in R, it is important to ensure that the data is an data frame. 
+
+################
+
+#Question 2: Work out the probability that the sum of the two dice is less than 5. 
+
+P(5)=P(1|4)+P(4|1)+P(3|2)+P(2|3)
+probability<-(1/6)^2+(1/6)^2+(1/6)^2+(1/6)^2
+
+################
+
+#Question 3: How is the graph that is represented in this data misleading.
+
+#The graph is misleading and the worry is unwarranted because the number of Nobel prizes decreased for each country.
+
+################
+
+#Question 4: finding the of finding a variable between two data points in a continuous data set. 
+
+#Plot the data first, represent the data within a normal distribution: 
+
+fly_values<-sample(1:100, 100)
+#fly_length<-c(3.63, 3.21,3.83,...
+#Something like this, do not have the time to input all of the data points. 
+
+p<-1.015*2.71828^(-(4.75-4.6042)^2/(0.393^2*2)) 
+p<-p*0.5
+
+
+#This is correct, and the values that are taken form the table. Reflect this. 
+#The results show that the probability that the length of flies is between 4.5 and 5.0 is 40%. 
+#########################################################
+
+#Question 5: Plot the PDF and the CDF for a series of data point. 
+
+Flies_length<-c(4.40, 4.35, 4.25, 4.68, 5.40, 4.43, 3.63, 4.46, 4.43, 4.63)
+Flies_length<-Flies_length[order(Flies_length)]#Order, useful in arranging the values within the vector in acceding order. 
+Flies_length<-as.numeric(Flies_length) #as.numeric, useful in converting the data type of the data. 
+
+p1<-1.015*2.71828^(-(3.63-4.6042)^2/(2*0.393^2))
+p2<-1.015*2.71828^(-(4.25-4.6042)^2/(2*0.393^2))
+p3<-1.015*2.71828^(-(4.35-4.6042)^2/(2*0.393^2))
+p4<-1.015*2.71828^(-(4.40-4.6042)^2/(2*0.393^2))
+p5<-1.015*2.71828^(-(4.43-4.6042)^2/(2*0.393^2))
+p6<-1.015*2.71828^(-(4.43-4.6042)^2/(2*0.393^2))
+p7<-1.015*2.71828^(-(4.46-4.6042)^2/(2*0.393^2))
+p8<-1.015*2.71828^(-(4.63-4.6042)^2/(2*0.393^2))
+p9<-1.015*2.71828^(-(4.68-4.6042)^2/(2*0.393^2))
+p10<-1.015*2.71828^(-(5.40-4.6042)^2/(2*0.393^2)) #Uses the normal distribution function, to calculate the probability of certin values. 
+
+Probability_per_mm<-c(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10)
+PDF<-cbind(Flies_length, Probability_per_mm)
+PDF<-as.data.frame(PDF)
+
+í
+#The curve is to as expected. The data is somewhat normally distributed. 
+
+################################################################################
+
+PDF<-arrange(PDF,probability) #Useful in arranging the values is acceding or descending order.
+C1<-nrow(PDF[PDF$Flies_length <= PDF[1,1], ])/10
+C2<-nrow(PDF[PDF$Flies_length <= PDF[2,1], ])/10
+C3<-nrow(PDF[PDF$Flies_length <= PDF[3,1], ])/10
+C4<-nrow(PDF[PDF$Flies_length <= PDF[4,1], ])/10
+C5<-nrow(PDF[PDF$Flies_length <= PDF[5,1], ])/10
+C6<-nrow(PDF[PDF$Flies_length <= PDF[6,1], ])/10
+C7<-nrow(PDF[PDF$Flies_length <= PDF[7,1], ])/10
+C8<-nrow(PDF[PDF$Flies_length <= PDF[8,1], ])/10
+C9<-nrow(PDF[PDF$Flies_length <= PDF[9,1], ])/10
+C10<-nrow(PDF[PDF$Flies_length <= PDF[10,1], ])/10
+#Note that this function, [], specially with the comer after the brackets is to call the position of the number 
+
+CDF<-c(C1,C2,C3,C4,C5,C6,C7,C8,C9,C10)
+CDF<-format(CDF, digits=3)#Useful in rounding up the data. 
+CDF<-as.numeric(CDF)
+
+CDF_data<-cbind(Flies_length, CDF)#Allows for the combining of vectors, in a column format. 
+CDF_data<-as.data.frame(CDF_data)                    
+
+CDF_plot<-CDF_data %>%
+  ggplot(aes(x=Flies_length, y=CDF))+
+  geom_point(aes(x=Flies_length, y=CDF),size=2)+
+  geom_smooth(method="lm", formula = y ~ poly(x, 3), se=FALSE)
+CDF_plot  
+#Ensure that the data is in the numeric form, unable plot line graphs without the data being in numeric form. 
+
+CDF_PDF_plot<-ggarrange(CDF_plot, PDF_plot, labels = c("A", "B"), ncol = 2, nrow = 1)  #Useful code for combinding two graphs together. 
+CDF_PDF_plot  
+
+########################
+
+#Useful but redundant code: 
+
+max_data_point<-PDF %>%
+  summarise(values=max(Probability)) #Code used to obtain the max data point form a column. The group function will be required to obtain the max value from multiple data points. 
+library(ggpubr) #This package is useful in combining the graphs. 
+
+length(x)#This code is used to count the data that is within a vector. Use the $ function to specify the vector that i wish to investigate. 
+
+#######################
+
+#4)Measures
+
+#1)Calculate the standard deviation and the skewness for the following results. 
+
+data_points<-c(1,2,3)
+data_points<-as.numeric(data_points)
+
+values<-c(-1,0,1)
+values_2<-c(-1,0,4)
+values_3<-c(-4,0,1)
+values_4<-c(-2,0,8)
+
+values<-as.numeric(values)
+values_2<-as.numeric(values_2)
+values_3<-as.numeric(values_3)
+values_4<-as.numeric(values_4)
+
+q1<-cbind(data_points,values, values_2, values_3, values_4)
+
+q1<-as.data.frame(q1)
+
+q1<-pivot_longer(q1, !data_points, values_to="data", names_to="values" )
+
+q1_mean<-q1 %>%
+  group_by(values) %>%
+  summarise_at(vars(data), list(name = mean))
+
+sd_a<-(((-1-q1_mean[1,2])+(0-q1_mean[1,2])+(1-q1_mean[1,2]))^2/(3-1))^0.5
+sd_b<-(((-1-q1_mean[2,2])+(0-q1_mean[2,2])+(4-q1_mean[2,2]))^2/(3-2))^0.5
+sd_c<-(((-4-q1_mean[3,2])+(0-q1_mean[3,2])+(1-q1_mean[3,2]))^2/(3-2))^0.5
+sd_d<-(((-2-q1_mean[4,2])+(0-q1_mean[4,2])+(8-q1_mean[4,2]))^2/(3-2))^0.5
+#Correct, all the values just add up to zero to confuse. 
+
+s1<-((-1-q1_mean[1,2])+(0-q1_mean[1,2])+(1-q1_mean[1,2])/3)^3/(sd_a)^3
+#All of the skewed results will equal zero because the standard deviation equals zero. 
+
+#2) calcualte the statistical parmaters for the throwing of one dice and two dice 100x times. 
+
+dice_seq<-runif(n=100, min=1, max=6)
+dice_seq<-round(dice_seq, digits=0)
+
+sequence_values<-sample(1:100, 100)
+
+dice_seq<-sample(dice_seq)
+a_seq_data<-cbind(sequence_values, dice_seq)
+a_seq_data<-as.data.frame(a_seq_data)
+
+dice_seq_2<-sample(dice_seq)
+two_dice_seq<-(dice_seq+dice_seq_2)
+
+b_seq_data<-cbind(sequence_values,two_dice_seq)
+b_seq_data<-as.data.frame(b_seq_data)
+
+a_graph<- a_seq_data %>%
+  ggplot(aes(x=dice_seq))+
+  geom_histogram(aes(x=dice_seq))
+a_graph
+
+b_graph<-b_seq_data %>%
+  ggplot(aes(x=two_dice_seq))+
+  geom_histogram(aes(x=two_dice_seq))
+b_graph
+
+a_mean<-mean(a_seq_data$dice_seq) #3.32
+b_mean<-mean(b_seq_data$two_dice_seq) #6.64
+
+sd_a<-sum((a_seq_data[,2]-3.32)^2/99)
+sd_a<-sd_a^0.5
+sd_a #1.54
+
+sd_b<-sum((b_seq_data[,2]-6.64)^2/99)
+sd_b<-sd_b^0.5
+sd_b #1.91
+
+sd_a_2<-sd(a_seq_data$dice_seq)
+print(sd_a_2)#0.19
+
+sd_b_2<-sd(b_seq_data$two_dice_seq)
+print(sd_b_2)#0.05
+
+#The difference in these values is insignificant, the standard deviation function in R is an effective means of invesitgating this function. 
+
+s_a<-sum(((a_seq_data[,2]-a_mean)/length(a_seq_data$dice_seq))^3/sd_a^3)
+s_a
+
+s_b<-sum(((b_seq_data[,2]-b_mean)/length(b_seq_data$two_dice_seq))/sd_b^3)
+sd_b
+#Both of the skewness values are very small, which indicates that the data is normally distributed. 
+
+#####################
+#3. Mark the position of the median of the data (4.595 mm) on the p.d.f. given in Fig. 3.5 and decide if it divides the area under the curve into two equal parts. Do the same for the c.dJ. given in Fig. 3.10 and decide if it corresponds to a probability of 0.5
+
+fly_wing_length<-runif(n=100, min=1.8, max=2.75)
+fly_wing_length_2<-sample(fly_wing_length)#Shuffles the values of the data. 
+fly_wing_length_3<-(fly_wing_length+fly_wing_length_2) #Like the two dice, creates normally distrusted fly data. 
+fly_wing_length_3<-round(fly_wing_length_3, digits=1)#Rounds the data into three digits makes the data a lot easier to read. 
+
+values<-sample(1:100, 100)#Creates a random a random set of values, so that i am able to creat a data frame 
+values<-sort(values, decreasing=FALSE, na.last=NA)#The method to alter the order of the values of the data. 
+
+values<-as.numeric(values)
+fly_wing_length_3<-as.numeric(fly_wing_length_3)
+#Set the the vectors that are created above as a numeric vector. 
+
+fly_wing_length_data<-cbind(values,fly_wing_length_3)
+fly_wing_length_data<-as.data.frame(fly_wing_length_data)
+#Creation of a data frame for the fly length. 
+
+fly_wing_length_histo<-fly_wing_length_data %>%
+  ggplot(aes(x=fly_wing_length_3))+
+  geom_histogram(aes(x=fly_wing_length_3), bins = 35)
+fly_wing_length_histo
+#A simple histogram for the fly_wing_length data.
+
+fly_wing_length_count<-count(fly_wing_length_data, fly_wing_length_3) #Count the number of data points. Only possible becuase I rounded the data, meaning that there is going to be more than 1 of the same data point. 
+#Consider if i wanted to count for a wider Bin size. 
+fly_wing_length_count_probability<-fly_wing_length_count[,2]/100 #Want to take the fly length values for this vector. 
+
+probability_per_mm<-fly_wing_length_count_probability/(fly_wing_length_count[,1])
+
+fly_wing_length_3<-fly_wing_length_count[,1]
+fly_wing_length_plot_data_PDF<-cbind(fly_wing_length_count_probability,probability_per_mm,fly_wing_length_3)
+fly_wing_length_plot_data_PDF<-as.data.frame(fly_wing_length_plot_data_PDF)
+
+PDF<-fly_wing_length_plot_data_PDF %>%
+  ggplot(aes(x=fly_wing_length_3, y=probability_per_mm))+
+  geom_point(aes(x=fly_wing_length_3, y=probability_per_mm))+
+  geom_smooth(method="lm", formula = y ~ poly(x, 4), se=FALSE)+
+  geom_vline(xintercept = median(fly_wing_length_3))
+PDF
+
+
+
+fly_wing_length_plot_data<-arrange(fly_wing_length_plot_data_PDF,probability_per_mm)# This function is used to order the data frame. 
+
+cf<-cumsum(fly_wing_length_plot_data$probability_per_mm)/sum(fly_wing_length_plot_data$probability_per_mm) #The cumsum function is useful for adding up incrementally a series of values.  
+
+fly_wing_length_plot_data_CDF<-cbind(cf,fly_wing_length_3)
+fly_wing_length_plot_data_CDF<-as.data.frame(fly_wing_length_plot_data_CDF)
+
+CDF<-fly_wing_length_plot_data_CDF %>%
+  ggplot(aes(x=fly_wing_length_3, y=cf))+
+  geom_point(aes(x=fly_wing_length_3, y=cf))+
+  geom_smooth(method="lm", formula = y ~ poly(x, 5), se=FALSE)+
+  geom_vline(xintercept = median(fly_wing_length_3))
+CDF
+
+values<-runif(n=100, min=0, max=100)
+fly_wing_length_3<-(fly_wing_length+fly_wing_length_2)
+raw_PDF_data<-cbind(values, fly_wing_length_3)
+raw_PDF_data<-as.data.frame(raw_PDF_data)
+
+raw_PDF<-raw_PDF_data %>%
+  ggplot(aes(x=fly_wing_length_3))+
+  geom_histogram(aes(x=fly_wing_length_3))+
+  geom_vline(xintercept =median(fly_wing_length_3))
+raw_PDF
+
+cf<-cumsum(raw_PDF_data$fly_wing_length_3)/sum(raw_PDF_data$fly_wing_length_3)#A more optimum way of producing a cumulative frequency plot.  
+
+fly_wing_length_3<-sort(fly_wing_length_3)
+raw_CDF_data<-cbind(values,fly_wing_length_3,cf)
+raw_CDF_data<-as.data.frame(raw_CDF_data)
+
+raw_CDF<-raw_CDF_data %>%
+  ggplot(aes(x=fly_wing_length_3, y=cf))+
+  geom_point(aes(x=fly_wing_length_3, y=cf))+
+  geom_vline(aes(xintercept =median(fly_wing_length_3)))+#ensure that the aes function goes first.
+  geom_smooth(method="lm", formula = y ~ poly(x, 5), se=FALSE)
+raw_CDF
+
+PDF_CDF_figure<- ggarrange(raw_PDF,raw_CDF,PDF,CDF,
+                   labels = c("Raw PDF", "Raw CDF", "PDF", "CDF"),
+                   ncol = 2, nrow = 2)
+PDF_CDF_figure
+#Overall good data, best to use the raw CDF and the PDF data. 
+#The median results are different from each other because the fly length values that are discounted whilst calculating the probability per mm values. 
+
+#Extension question: what is the probability that the fly length is between 4.8-5.2mm
+
+#p(5)=x
+#x*0.2
+
+#This is the method that should be used to calculate the probability that the values is within the parameters. 
+#calculating the various parameters to describe the distribution would take too long; the equation to find the probability of a value within normally distributed data is: 
+
+#p(x)=(Ne^-(x-m)^2/2S^2)*(x2-x1)/2
+
+##Q4. Calculate the standard deviation of the following numbers: 4.32, 2.79, 5.14, 3.87 and 2.31 using both V(x) = 1:(x - i)2 In and V(x) = < ~ > - <X >2. 
+#(These formulae use n, the number of measurements, rather than n - 1, the number of degrees of freedom.
+#In both cases we can multiply the final answer by nl(n -1) to allow for this.
+
+x<-c(4.32,2.79,5.14,3.87,2.31)
+x_squared<-x^2
+
+x<-as.numeric(x)
+
+df<-cbind(x,x_squared)
+df<-as.data.frame(df)
+
+#V1<-(sum(x-mean(x))^2)/count(df) #When trying to work out the equation in one go, a strange value appears. 
+V1<-x-mean(x)
+V1<-V1^2
+V1<-sum(V1)
+V1<-V1/5
+V1<-V1*(5/4)
+V1
+
+#V2<-sum(x_squared/5-sum(x/5)^2
+V2a<-sum(x_squared)
+V2a<-V2a/5
+V2b<-x/5
+V2b<-sum(V2b)
+V2b<-(V2b)^2
+V2<-V2a-V2b
+V2<-V2*(5/4)
+V2
+V1-V2 #A very small number, which indicates that both values are mostly the same. 
+
+V3<-sd(df$x)
+V3<-V3*(5/4)#Multiplying by the bessels correction, which accounts for the degrees in freedom. 
+V3
+
+#Be careful with the count function, using the count function in a formula automatically takes the average of sum of the sum of valuables. 
+#Better to use the count function to produce a variable, than can then be added into the formula. 
+
+#I am not sure if the standard deviation function takes into account the degree of freedom. When multiplying by 5/4 the values are in closer proximity to each other. 
+
+#Q5. Determine the range, lower quartile, upper quartile and interquartile range for the
+#housefly data given in Table 3.1
+
+fly_wing_length<-runif(n=100, min=1.8, max=2.75)
+fly_wing_length_2<-sample(fly_wing_length)
+fly_wing_length_3<-(fly_wing_length+fly_wing_length_2) 
+fly_wing_length_3<-round(fly_wing_length_3, digits=1)
+values<-sample(1:100, 100)
+values<-sort(values, decreasing=FALSE, na.last=NA)
+values<-as.numeric(values)
+fly_wing_length_3<-as.numeric(fly_wing_length_3)
+fly_wing_length_data<-cbind(values,fly_wing_length_3)
+fly_wing_length_data<-as.data.frame(fly_wing_length_data)
+
+min_fly<-min(fly_wing_length_data$fly_wing_length_3)
+max_fly<-max(fly_wing_length_data$fly_wing_length_3)
+fly_range<-max_fly-min_fly
+lower_quartile<-(fly_range*1/4)+min_fly
+upper_quartile<-max_fly-(fly_range*1/4)
+
+fly_histo<-fly_wing_length_data %>%
+  ggplot(aes(x=fly_wing_length_3))+
+  geom_histogram(aes(x=fly_wing_length_3))+
+  geom_vline(xintercept = mean(fly_wing_length_3), linewidth=1.0, colour="green")+
+  geom_vline(xintercept = lower_quartile, linewidth=1.0,colour="red")+
+  geom_vline(xintercept= upper_quartile, linewidth=1.0, colour="red")
+fly_histo
+
+#Q.6 a computer to generate three sets of normally distributed random numbers
+#with mean 0 and standard deviation 1, the first set containing ten numbers, the
+#second 40 and the third 160. Calculate the mean, the population standard deviation
+#and the standard deviation of the mean of each set of numbers. Note the relationships
+#between these estimates for the three sets of numbers.
+
+random_set_values_1<-runif(n=10, min=-5, max=5)
+random_set_values_1
+
+rnorm2 <- function(n,mean,sd)#This function can be used to create a data set with a cretin mean and standard deviation number. 
+
+values_1<-sample(1:10, 10)
+random_set_values_1<-rnorm(10,0,1)
+random_1_data<-cbind(values_1, random_set_values_1)
+random_1_data<-as.data.frame(random_1_data)
+
+values_2<-sample(1:40, 40)
+random_set_values_2<-rnorm(40,0,1)
+random_2_data<-cbind(values_2, random_set_values_2)
+random_2_data<-as.data.frame(random_2_data)
+
+values_3<-sample(1:100, 100)
+random_set_values_3<-rnorm(100,0,1)
+random_3_data<-cbind(values_3, random_set_values_3)
+random_3_data<-as.data.frame(random_3_data)
+
+random_plot_1<- random_1_data %>%
+  ggplot(aes(x=random_set_values_1))+
+  geom_histogram(aes(x=random_set_values_1))+
+  geom_vline(xintercept = mean(random_set_values_1), linewidth=1.0, colour="green")+
+  geom_vline(xintercept=sd(random_set_values_1),linewidth=1.0, colour="green" )
+random_plot_1
+
+mean(random_set_values_1)-0.075
+sd(random_set_values_1)1.34
+
+random_plot_2<- random_2_data %>%
+ggplot(aes(x=random_set_values_2))+
+  geom_histogram(aes(x=random_set_values_2))+
+  geom_vline(xintercept = mean(random_set_values_2), linewidth=1.0, colour="green")+
+  geom_vline(xintercept=sd(random_set_values_2),linewidth=1.0, colour="green" )
+random_plot_2
+
+mean(random_set_values_2)-0.052
+sd(random_set_values_2)0.99
+
+random_plot_3<- random_3_data %>%
+ggplot(aes(x=random_set_values_3))+
+  geom_histogram(aes(x=random_set_values_3))+
+  geom_vline(xintercept = mean(random_set_values_3), linewidth=1.0, colour="green")+
+  geom_vline(xintercept=sd(random_set_values_3),linewidth=1.0, colour="green" )
+random_plot_3
+
+mean(random_set_values_3)-0.068
+sd(random_set_values_3)1.14
+
+#The larger the data set, the better reflection that the data is of the mean and the standard deviation that are given to the data. 
+
+#Q7. You measure the lengths of the wings of 16 flies and obtain a mean of 4.60 mm and a population standard deviation of 0.40. What is the standard deviation of the mean? How many wings would you need to measure to obtain an estimate of the mean that was accurate to within 0.025 mm?
+
+values_4<-sample(1:16, 16)
+random_set_values_4<-rnorm(16,4.6,0.4)
+random_data_4<-cbind(values_4, random_set_values_4)
+random_data_4<-as.data.frame(random_data_4)
+
+sd<-sd(random_set_values_4)
+sd_mean<-(sd/16^0.5)
+
+
+values_required_for_a_more_accurate_mean_within_0.025mm<-(sd/0.025)^2
+ 
+
+
+#Q8) Work out the mean, standard deviation, skewness and kurtosis of the Prussian
+#army officer data in Table 4.2.
+
+number_of_deaths<-c(0,1,2,3,4,5)
+observed_frequency<-c(109,65,22,3,1,0)
+army_data<-cbind(number_of_deaths, observed_frequency)
+army_data<-as.data.frame(army_data)
+
+mean(observed_frequency) #33.3, the average number of deaths per platoon. 
+sd_army<-sd(observed_frequency)#44.5
+
+S<-((109-33.3)^3+(65-33.3)^3+(22-33.3)^3+(3-33.3)^3+(1-33.3)^3+(0-33.3)^3)/6
+S<-S/(sd_army)^3
+S #0.688<1, therefore the data is skewed to the left, this fits what is observed in the graph. 
+
+K<-((109-33.3)^4+(65-33.3)^4+(22-33.3)^4+(3-33.3)^4+(1-33.3)^4+(0-33.3)^4)/6
+K<-K/(sd_army)^4
+K #1.56<3 Therefore the data is leptokurtic, which means that it has a short tail. 
+
+army_plot<-army_data %>%
+  ggplot(aes(y=observed_frequency,x=number_of_deaths))+
+  geom_col(aes(y=observed_frequency,x=number_of_deaths))
+army_plot
+#When trying to plot a bar graph, use the geom_col function. The geom bar function should be used for grouped data. 
